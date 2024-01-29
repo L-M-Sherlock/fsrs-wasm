@@ -7,6 +7,7 @@
     <h1>FSRS WASM Example</h1>
     <button id="memory-state-btn">Calculate Memory State</button>
     <button id="next-interval-btn">Calculate Next Interval</button>
+    <button id="compute-weights-btn">Calulate Weights</button>
 
     <script type="module">
       import { default as wasm, Fsrs } from "./pkg/fsrs_wasm.js";
@@ -36,6 +37,14 @@
           const rating = 3;
           const result = fsrs.nextInterval(stability, desired_retention, rating);
           console.log("Next interval:", result);
+        }
+      });
+
+      document.getElementById("compute-weights-btn").addEventListener("click", () => {
+        if (fsrs) {
+          const fsrs_items = "[[[1, 3, 3, 1], [0, 2, 3, 7]], [[1, 3, 3, 3], [0, 2, 3, 5]]]"
+          const result = fsrs.computeWeights(fsrs_items);
+          console.log("Weights:", result);
         }
       });
     </script>

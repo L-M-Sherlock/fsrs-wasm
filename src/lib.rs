@@ -46,4 +46,29 @@ impl FSRSwasm {
         self.model
             .next_interval(stability, desired_retention, rating)
     }
+    #[wasm_bindgen(js_name = computeWeights)]
+    pub fn compute_weights(&self, fsrs_items: String) -> Vec<f32> {
+        let fsrs_items: Vec<Vec<Vec<u32>>> = serde_json::from_str(&fsrs_items).unwrap();
+        let fsrs_items: Vec<FSRSItem> = fsrs_items
+            .into_iter()
+            .map(|item| FSRSItem {
+                reviews: item
+                    .into_iter()
+                    .map(|review| FSRSReview {
+                        rating: review[0],
+                        delta_t: review[1],
+                    })
+                    .collect(),
+            })
+            .collect();
+        self.model.compute_weights(fsrs_items, None).unwrap()
+    }
+}
+
+#[test]
+fn test_compute_weights() {
+    let fsrs_items = "[[[1, 3, 3, 1], [0, 2, 3, 7]], [[1, 3, 3, 3], [0, 2, 3, 5]]]";
+    let fsrs = FSRSwasm::new();
+    let weights = fsrs.compute_weights(fsrs_items.to_owned());
+    dbg!(&weights);
 }

@@ -1,4 +1,5 @@
 use burn::backend::NdArrayBackend;
+use console_error_panic_hook::set_once as set_panic_hook;
 use fsrs::{FSRSItem, FSRSReview, DEFAULT_WEIGHTS, FSRS};
 use wasm_bindgen::prelude::*;
 
@@ -48,6 +49,7 @@ impl FSRSwasm {
     }
     #[wasm_bindgen(js_name = computeWeights)]
     pub fn compute_weights(&self, fsrs_items: String) -> Vec<f32> {
+        set_panic_hook();
         let fsrs_items: Vec<Vec<Vec<u32>>> = serde_json::from_str(&fsrs_items).unwrap();
         let fsrs_items: Vec<FSRSItem> = fsrs_items
             .into_iter()
